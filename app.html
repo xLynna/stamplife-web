@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StampLife – Get the App</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #faf8f4;
+      --text-main: #1c1c1c;
+      --text-muted: #8b8b8b;
+      --accent: #d94b4b;
+      --border: #e6e2dc;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 48px 32px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+      max-width: 420px;
+      width: 100%;
+    }
+
+    .logo {
+      margin-bottom: 24px;
+    }
+
+    .logo img {
+      height: 32px;
+    }
+
+    h1 {
+      font-family: "Playfair Display", serif;
+      font-size: 32px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin: 0 0 28px 0;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 28px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text-main);
+      transition: all 0.2s ease;
+      margin: 0 8px 8px 0;
+    }
+
+    .btn-primary {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      background: rgba(0,0,0,0.03);
+    }
+
+    .platform-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      line-height: 1;
+    }
+
+    .back-link {
+      margin-top: 32px;
+      font-size: 14px;
+    }
+
+    .back-link a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .back-link a:hover {
+      color: var(--text-main);
+    }
+
+    /* Hide all views by default; JS will show the right one */
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .loading .view.loading-view {
+      display: block;
+    }
+
+    .copy-feedback {
+      display: block;
+      font-size: 14px;
+      color: var(--accent);
+      margin-top: 8px;
+      min-height: 1.4em;
+    }
+
+    #view-desktop .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    #view-desktop .buttons .btn {
+      margin: 0;
+    }
+  </style>
+</head>
+<body class="loading">
+
+  <div class="card">
+    <div class="logo">
+      <img src="stamplife_logo.png" alt="StampLife logo">
+    </div>
+
+    <!-- Shown briefly while detecting platform -->
+    <div class="view loading-view" id="view-loading">
+      <p>Taking you to the right place…</p>
+    </div>
+
+    <!-- Desktop: prompt to open on mobile -->
+    <div class="view" id="view-desktop">
+      <div class="platform-icon" aria-hidden="true">📱</div>
+      <h1>Open on your phone</h1>
+      <p>Copy the link and open it on your iPhone to download the app.</p>
+      <p><b>Android?</b> We’re working on it — stay tuned.</p>
+      <div class="buttons">
+        <button type="button" class="btn btn-primary" id="copy-link-btn">Copy link</button>
+        <a class="btn" href="index.html">Back to support</a>
+      </div>
+      <span id="copy-feedback" class="copy-feedback" aria-live="polite"></span>
+    </div>
+
+    <!-- iOS: redirect happens; this is fallback if redirect is delayed or blocked -->
+    <div class="view" id="view-ios">
+      <div class="platform-icon" aria-hidden="true">🍎</div>
+      <h1>Download StampLife</h1>
+      <p>You’re almost there. If you weren’t redirected, tap the button below.</p>
+      <a class="btn btn-primary" href="#" id="ios-download-link">Download on the App Store</a>
+      <div class="back-link">
+        <a href="index.html">Back to support</a>
+      </div>
+    </div>
+
+    <!-- Android: coming soon -->
+    <div class="view" id="view-android">
+      <div class="platform-icon" aria-hidden="true">🤖</div>
+      <h1>Android coming soon</h1>
+      <p>We’re building StampLife for Android. Leave your email and we’ll notify you when it’s ready.</p>
+      <form id="android-notify-form">
+        <input type="email" name="email" placeholder="your@email.com" required
+          style="width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;margin-bottom:12px;box-sizing:border-box;">
+        <button type="submit" class="btn btn-primary">Notify me</button>
+      </form>
+      <div class="back-link" style="margin-top: 16px;">
+        <a href="index.html">Back to support</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PostHog -->
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+
+    var POSTHOG_KEY = 'phc_kPLJPDPqMJyY5r1tCFqaxwljqJdHkT6TQX9gB56qlur';
+    var POSTHOG_HOST = 'https://eu.i.posthog.com';
+
+    if (POSTHOG_KEY && POSTHOG_KEY.indexOf('YOUR_') === -1) {
+      posthog.init(POSTHOG_KEY, { api_host: POSTHOG_HOST });
+    }
+
+    function getPlatform() {
+      var ua = navigator.userAgent || navigator.vendor || '';
+      if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) return 'ios';
+      if (/android/i.test(ua)) return 'android';
+      return 'desktop';
+    }
+
+    function getUtmParams() {
+      var params = new URLSearchParams(window.location.search);
+      return {
+        utm_source: params.get('utm_source') || undefined,
+        utm_medium: params.get('utm_medium') || undefined,
+        utm_campaign: params.get('utm_campaign') || undefined,
+        utm_term: params.get('utm_term') || undefined,
+        utm_content: params.get('utm_content') || undefined
+      };
+    }
+
+    function showView(platform) {
+      document.body.classList.remove('loading');
+      var view = document.getElementById('view-' + platform);
+      if (view) view.classList.add('active');
+
+      if (window.posthog && posthog.__loaded) {
+        var utm = getUtmParams();
+        posthog.capture('app_download_page_viewed', {
+          platform: platform,
+          utm_source: utm.utm_source,
+          utm_medium: utm.utm_medium,
+          utm_campaign: utm.utm_campaign,
+          utm_term: utm.utm_term,
+          utm_content: utm.utm_content
+        });
+      }
+    }
+
+    var APP_STORE_URL = 'https://apps.apple.com/app/stamplife-your-photo-diary/id6756941376';
+
+    function init() {
+      var platform = getPlatform();
+
+      if (platform === 'ios' && APP_STORE_URL.indexOf('idYOUR_') === -1) {
+        var link = document.getElementById('ios-download-link');
+        if (link) link.href = APP_STORE_URL;
+        showView('ios');
+        window.location.replace(APP_STORE_URL);
+        return;
+      }
+
+      if (platform === 'ios') {
+        var fallbackLink = document.getElementById('ios-download-link');
+        if (fallbackLink) fallbackLink.href = APP_STORE_URL;
+      }
+
+      showView(platform);
+    }
+
+    document.getElementById('copy-link-btn').addEventListener('click', function() {
+      var url = window.location.href;
+      var feedback = document.getElementById('copy-feedback');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(function() {
+          feedback.textContent = 'Link copied! Paste it on your phone.';
+          feedback.setAttribute('role', 'status');
+          setTimeout(function() { feedback.textContent = ''; }, 3000);
+        }).catch(function() {
+          feedback.textContent = 'Copy failed — select the URL in your address bar.';
+        });
+      } else {
+        try {
+          var input = document.createElement('input');
+          input.value = url;
+          input.setAttribute('readonly', '');
+          input.style.position = 'absolute';
+          input.style.left = '-9999px';
+          document.body.appendChild(input);
+          input.select();
+          document.execCommand('copy');
+          document.body.removeChild(input);
+          feedback.textContent = 'Link copied! Paste it on your phone.';
+          setTimeout(function() { feedback.textContent = ''; }, 3000);
+        } catch (err) {
+          feedback.textContent = 'Copy failed — select the URL in your address bar.';
+        }
+      }
+    });
+
+    document.getElementById('android-notify-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var email = this.email.value;
+      if (window.posthog && posthog.__loaded) {
+        posthog.capture('android_notify_requested', {
+          platform: 'android',
+          email: email
+        });
+      }
+      alert('Thanks! We’ll email you when StampLife is on Android.');
+      this.reset();
+    });
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
